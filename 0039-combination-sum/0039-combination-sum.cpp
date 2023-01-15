@@ -1,34 +1,26 @@
 class Solution {
 public:
-    
-    set<vector<int>> s;
-    void dfs(vector<int> &candidates, vector<int> temp, int sum, int target){
-        if(sum==target){
-            sort(temp.begin(), temp.end());
-            s.insert(temp);
-            return ;
+    vector<vector<int> > answer;
+    void subWithSumK(vector<int> &arr,int n,int i,int sum,vector<int>&ds,int k){
+        if(i == n){
+            if(sum == k){
+                answer.push_back(ds);
+            }
+            return;
         }
-        if(sum>target) return ;
         
-        for(int i=0;i<candidates.size();i++){
-            sum+=candidates[i];
-            temp.push_back(candidates[i]);
-            dfs(candidates, temp, sum, target);
-            sum-=candidates[i];
-            temp.pop_back();
+        if(arr[i] + sum <= k){
+            ds.push_back(arr[i]);
+            subWithSumK(arr,n,i,sum + arr[i],ds,k);
+            ds.pop_back();
         }
+
+        subWithSumK(arr,n, i + 1,sum,ds,k);
     }
-    
-    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        vector<int> temp;
-        vector<vector<int>> ans;
-        int sum=0;
-        dfs(candidates, temp, sum, target);
-        auto it = s.begin();
-        while(it!=s.end()){
-            ans.push_back(*it);
-            it++;
-        }
-        return ans;
+     
+    vector<vector<int> > combinationSum(vector<int>& nums,int k){
+        vector<int>ds;
+        subWithSumK(nums,nums.size(),0,0,ds,k);
+        return answer;
     }
 };
